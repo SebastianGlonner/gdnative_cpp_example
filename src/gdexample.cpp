@@ -1,4 +1,5 @@
 #include "gdexample.h"
+#include <string>
 
 using namespace godot;
 
@@ -7,7 +8,7 @@ void GDExample::_register_methods() {
 	register_property<GDExample, float>("amplitude", &GDExample::amplitude, 10.0);
 	register_property<GDExample, float>("speed", &GDExample::set_speed, &GDExample::get_speed, 1.0);
 
-	register_signal<GDExample>((char *)"position_changed", "node", GODOT_VARIANT_TYPE_OBJECT, "new_pos", GODOT_VARIANT_TYPE_VECTOR2);
+	register_signal<GDExample>(godot::String{"position_changed"}, godot::Dictionary{});
 }
 
 GDExample::GDExample() {
@@ -19,9 +20,10 @@ GDExample::~GDExample() {
 
 void GDExample::_init() {
 	// initialize any variables here
+	time_emit = 0.0;
 	time_passed = 0.0;
-	amplitude = 10.0;
-	speed = 1.0;
+	amplitude = 100.0;
+	speed = 2.0;
 }
 
 void GDExample::_process(float delta) {
@@ -32,11 +34,18 @@ void GDExample::_process(float delta) {
 		amplitude + (amplitude * cos(time_passed * 1.5))
 	);
 
+	// Godot::print(std::to_string(delta).c_str());
+
 	set_position(new_position);
 
 	time_emit += delta;
+
+	// Godot::print(std::to_string(time_emit).c_str());
+
 	if (time_emit > 1.0) {
-		emit_signal("position_changed", this, new_position);
+		
+
+		emit_signal("position_changed");
 
 		time_emit = 0.0;
 	}
